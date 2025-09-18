@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NIMA V8 Pair Code</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }body {
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  background: linear-gradient(-45deg, #000000, #001133, #003366, #000000);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+video#bg-video {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  opacity: 0.15;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 1s ease;
+}
+
+.logo i {
+  font-size: 3rem;
+  color: #3399ff;
+  animation: heartbeat 2s infinite;
+}
+
+.logo h3 {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.logo h6 {
+  color: #cccccc;
+  font-weight: 400;
+  margin-top: 10px;
+}
+
+.input-container {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.input-container input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+.input-container input::placeholder {
+  color: #aaaaaa;
+}
+
+.input-container button {
+  background: linear-gradient(135deg, #0033ff, #00aaff);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.input-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+}
+
+#result, #status-message {
+  margin-top: 20px;
+  color: #ffffff;
+}
+
+.code-display {
+  background: linear-gradient(135deg, #0033ff, #00aaff);
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.code-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@media (max-width: 500px) {
+  .input-container {
+    flex-direction: column;
+  }
+  .input-container button {
+    width: 100%;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <video autoplay muted loop id="bg-video">
+    <source src="https://files.catbox.moe/6c30io.mp4" type="video/mp4" />
+  </video>
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="box">
+      <div class="logo">
+        <i class="fas fa-heart"></i>
+        <h3>NIMA V8</h3>
+        <h6>Enter your WhatsApp number with country code</h6>
+      </div>
+      <div class="input-container">
+        <input id="number" placeholder="e.g. 94726800***" maxlength="15" />
+        <button id="submit">Generate</button>
+      </div>
+      <div id="status-message"></div>
+      <div id="result"></div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+  <script>
+
+
+ const video = document.getElementById('bg-video');
+        
+        // Enhanced video handling
+        video.addEventListener('loadeddata', () => {
+            video.play().catch(e => console.log('Video autoplay failed:', e));
+        });
+
+
+        // Unmute on user interaction
+        document.addEventListener('click', function() {
+            if (video.muted) {
+                video.muted = false;
+                video.volume = 0.3;
+            }
+        }, { once: true });
+
+
+
+    
+    const numberInput = document.getElementById("number");
+    const submitBtn = document.getElementById("submit");
+    const statusMessage = document.getElementById("status-message");
+    const result = document.getElementById("result");function showStatus(message, type = 'info') {
+  statusMessage.textContent = message;
+  statusMessage.style.color = type === 'error' ? '#ff4d4d' : type === 'success' ? '#00ffcc' : '#ffffff';
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function createCodeDisplay(code) {
+  const codeDiv = document.createElement('div');
+  codeDiv.className = 'code-display';
+  codeDiv.textContent = code;
+  codeDiv.onclick = async () => {
+    const success = await copyToClipboard(code);
+    codeDiv.textContent = success ? 'Copied!' : code;
+    setTimeout(() => codeDiv.textContent = code, 2000);
+  };
+  return codeDiv;
+}
+
+submitBtn.addEventListener("click", async () => {
+  const phoneNumber = numberInput.value.replace(/\D/g, '');
+  if (!phoneNumber || phoneNumber.length < 10) {
+    showStatus("Please enter a valid number", "error");
+    return;
+  }
+  showStatus("Generating code...", "info");
+  result.innerHTML = "";
+  try {
+    const res = await axios.get(`/code?number=${phoneNumber}`);
+    if (res.data && res.data.code) {
+      showStatus("Code generated successfully", "success");
+      result.appendChild(createCodeDisplay(res.data.code));
+    } else {
+      showStatus("Failed to get code", "error");
+    }
+  } catch {
+    showStatus("Error connecting to server", "error");
+  }
+});
+
+  </script>
+</body>
+</html>

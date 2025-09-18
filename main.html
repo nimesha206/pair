@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIMA V8 Pairing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+        }
+
+        video#bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.4;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.6));
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        .logo-container {
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .content h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b0b3c7;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .buttons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .btn {
+            position: relative;
+            padding: 18px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-qr {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-pair {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-deploy {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            box-shadow: 0 10px 30px rgba(255, 236, 210, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            animation: fadeIn 2s ease-out 1.5s both;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .buttons-container {
+                grid-template-columns: 1fr;
+                max-width: 300px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 15px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="bg-video">
+        <source src="https://files.catbox.moe/22rjf9.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video.
+    </video>
+    
+    <div class="overlay"></div>
+
+    <div class="content">
+        <div class="logo-container">
+            <h1>GENERATED BY NIMESHA MADHUSHAN</h1>
+            <p class="subtitle">Advanced WhatsApp Bot Pairing System</p>
+        </div>
+        
+        <div class="buttons-container">
+            <button onclick="openPage('/qr')" class="btn btn-qr">
+                <i class="fas fa-qrcode"></i>
+                QR Code Scanner
+            </button>
+            <button onclick="openPage('/pair')" class="btn btn-pair">
+                <i class="fas fa-mobile-alt"></i>
+                Pair Code Generator
+            </button>
+            <button onclick="openPage('https://wa.link/lg8il1', true)" class="btn btn-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp Inbox
+            </button>
+            <button onclick="openPage('https://github.com/Nimeshamadhushan/NIMA-V8.git', true)" class="btn btn-deploy">
+                <i class="fab fa-github"></i>
+                Deploy Bot
+            </button>
+        </div>
+        
+        <div class="footer">
+            <p>2025 NIMA V8 | Developed with Nimesha</p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('bg-video');
+        
+        // Enhanced video handling
+        video.addEventListener('loadeddata', () => {
+            video.play().catch(e => console.log('Video autoplay failed:', e));
+        });
+
+        // Unmute on user interaction
+        document.addEventListener('click', function() {
+            if (video.muted) {
+                video.muted = false;
+                video.volume = 0.3;
+            }
+        }, { once: true });
+
+        // Enhanced navigation function
+        function openPage(url, external = false) {
+            if (external) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        // Add loading animation for buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.opacity = '0.7';
+                setTimeout(() => {
+                    this.style.opacity = '1';
+                }, 200);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const buttons = document.querySelectorAll('.btn');
+            let currentIndex = Array.from(buttons).findIndex(btn => btn === document.activeElement);
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    currentIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+                    buttons[currentIndex].focus();
+                    break;
+                case 'ArrowDown':
+                case 'ArrowRight':
+                    e.preventDefault();
+                    currentIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+                    buttons[currentIndex].focus();
+                    break;
+                case 'Enter':
+                    if (document.activeElement.classList.contains('btn')) {
+                        document.activeElement.click();
+                    }
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
